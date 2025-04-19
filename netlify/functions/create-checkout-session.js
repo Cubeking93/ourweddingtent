@@ -7,60 +7,48 @@ exports.handler = async (event) => {
     const data = JSON.parse(event.body);
     const { vendor_id, vendor_name, email, cc_email, amount, notes } = data;
 
-    // 1. Create customer in Stripe with metadata
-    const customer = await stripe.customers.create({
-      email,
-      metadata: {
-        vendor_id,
-        vendor_name,
-        notes
-      }
-    });
-
-    // 2. Create Stripe Checkout session (no customer_creation!)
+    // 1. Create a Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
       mode: 'payment',
       payment_method_types: ['card'],
+      customer_email: email,
       line_items: [{
         price_data: {
           currency: 'usd',
           product_data: {
             name: `Lead Credit – ${vendor_name}`,
-            description: notes || 'Lead credit purchase'
+            description: notes || 'Lead credit payment'
           },
           unit_amount: parseInt(amount) * 100
         },
         quantity: 1
       }],
       success_url: 'https://ourweddingtent.com/thank-you.html',
-      cancel_url: 'https://ourweddingtent.com/admin.html'
+      cancel_url: 'https://ourweddingtent.com/admin.html',
+      customer_creation: 'always'
     });
 
-    // 3. Send checkout link via email
-    const recipients = [email, cc_email].filter(Boolean);
-    console.log('📨 Sending checkout link to:', recipients);
-
+    // 2. Send the checkout link via email
     await resend.emails.send({
-      from: 'sales@ourweddingtent.com',
-      to: recipients,
+      from: 'sales@mail.ourweddingtent.com', // ✅ Verified domain
+      to: [email, cc_email].filter(Boolean),
       subject: `Lead Credit Payment – ${vendor_name}`,
       html: `
         <p>Hello,</p>
         <p>A payment link has been generated for <strong>${vendor_name}</strong>.</p>
-        <p><a href="${session.url}">Click here to complete the $${amount} payment</a>.</p>
+        <p><a href="${session.url}">Click here to complete the payment of $${amount}</a>.</p>
         ${notes ? `<p><em>Note: ${notes}</em></p>` : ''}
       `
     });
 
-    console.log('✅ Email sent');
+    console.log('✅ Email sent to:', [email, cc_email].filter(Boolean));
 
     return {
       statusCode: 200,
       body: JSON.stringify({ url: session.url })
     };
   } catch (err) {
-    console.error('❌ Checkout session error:', err);
+    console.error('Checkout session error:', err);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: 'Stripe session creation failed.' })
