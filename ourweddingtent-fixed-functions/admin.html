@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9f8fc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+    img {
+      max-width: 160px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #2e2e2e;
+    }
+    form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      max-width: 400px;
+    }
+    input, textarea, button {
+      width: 100%;
+      font-size: 14px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: inherit;
+    }
+    button {
+      background: #a685ff;
+      color: white;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #8c6bff;
+    }
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="OurWeddingTent Logo">
+  <h1>Sales Portal</h1>
+  <form id="vendorForm">
+    <input type="text" name="vendor_name" placeholder="Vendor Name" required>
+    <input type="email" name="email" placeholder="Business Email" required>
+    <input type="text" name="vendor_id" placeholder="Vendor ID" required>
+    <input type="text" name="cc_email" placeholder="Sales Rep CC Email">
+    <input type="number" name="amount" placeholder="Amount (e.g., 1500)" required value="1500">
+    <textarea name="notes" placeholder="Additional notes (optional)"></textarea>
+    <button type="submit">Generate Checkout Link</button>
+  </form>
+
+  <script>
+    document.getElementById('vendorForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      const response = await fetch('/.netlify/functions/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      if (result.url) window.location.href = result.url;
+      else alert('There was an error creating the checkout session.');
+    });
+  </script>
+</body>
+</html>
