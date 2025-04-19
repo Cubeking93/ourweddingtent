@@ -17,7 +17,7 @@ exports.handler = async (event) => {
       }
     });
 
-    // 2. Create Stripe Checkout session (❗️ removed customer_email)
+    // 2. Create Stripe Checkout session (with conditional description)
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       mode: 'payment',
@@ -27,12 +27,13 @@ exports.handler = async (event) => {
           currency: 'usd',
           product_data: {
             name: `Lead Credit – ${vendor_name}`,
-            description: notes || ''
+            ...(notes ? { description: notes } : {}) // Only include if not empty
           },
           unit_amount: parseInt(amount) * 100
         },
         quantity: 1
       }],
+      setup_future_usage: 'off_session',
       success_url: 'https://ourweddingtent.com/thank-you.html',
       cancel_url: 'https://ourweddingtent.com/admin.html'
     });
