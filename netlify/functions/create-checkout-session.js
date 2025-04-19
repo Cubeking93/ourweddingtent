@@ -7,7 +7,7 @@ exports.handler = async (event) => {
     const data = JSON.parse(event.body);
     const { vendor_id, vendor_name, email, cc_email, amount, notes } = data;
 
-    // 1. Create customer in Stripe
+    // 1. Create a customer in Stripe to link payment method
     const customer = await stripe.customers.create({
       email,
       metadata: {
@@ -17,30 +17,30 @@ exports.handler = async (event) => {
       }
     });
 
-    // 2. Create Stripe Checkout session (with conditional description)
+    // 2. Create a Stripe Checkout Session with stored card capability
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       mode: 'payment',
       payment_method_types: ['card'],
+      setup_future_usage: 'off_session', // ✅ Store card for future charges
       line_items: [{
         price_data: {
           currency: 'usd',
           product_data: {
             name: `Lead Credit – ${vendor_name}`,
-            ...(notes ? { description: notes } : {}) // Only include if not empty
+            ...(notes ? { description: notes } : {}) // ✅ Only include if not empty
           },
           unit_amount: parseInt(amount) * 100
         },
         quantity: 1
       }],
-      setup_future_usage: 'off_session',
       success_url: 'https://ourweddingtent.com/thank-you.html',
       cancel_url: 'https://ourweddingtent.com/admin.html'
     });
 
-    // 3. Send checkout link via Resend
+    // 3. Send the checkout link via Resend email
     await resend.emails.send({
-      from: 'sales@ourweddingtent.com',
+      from: 'sales@ourweddingtent.com', // ✅ Must be verified in Resend
       to: [email, cc_email].filter(Boolean),
       subject: `Lead Credit Payment – ${vendor_name}`,
       html: `
@@ -51,10 +51,12 @@ exports.handler = async (event) => {
       `
     });
 
+    // 4. Return Stripe session URL to frontend
     return {
       statusCode: 200,
       body: JSON.stringify({ url: session.url })
     };
+
   } catch (err) {
     console.error('Checkout session error:', err);
     return {
