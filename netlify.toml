@@ -1,0 +1,3 @@
+[build]
+publish = "ourweddingtent-site"
+functions = "netlify/functions"
