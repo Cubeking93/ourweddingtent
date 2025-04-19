@@ -17,7 +17,7 @@ exports.handler = async (event) => {
       }
     });
 
-    // 2. Create Stripe Checkout session (customer_email removed!)
+    // 2. Create Stripe Checkout session (❗️ removed customer_email)
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       mode: 'payment',
@@ -33,14 +33,13 @@ exports.handler = async (event) => {
         },
         quantity: 1
       }],
-      setup_future_usage: 'off_session',
       success_url: 'https://ourweddingtent.com/thank-you.html',
       cancel_url: 'https://ourweddingtent.com/admin.html'
     });
 
-    // 3. Send the checkout link via Resend email
+    // 3. Send checkout link via Resend
     await resend.emails.send({
-      from: 'sales@ourweddingtent.com', // Must match a verified domain in Resend
+      from: 'sales@ourweddingtent.com',
       to: [email, cc_email].filter(Boolean),
       subject: `Lead Credit Payment – ${vendor_name}`,
       html: `
