@@ -7,7 +7,7 @@ exports.handler = async (event) => {
     const data = JSON.parse(event.body);
     const { vendor_id, vendor_name, email, cc_email, amount, notes } = data;
 
-    // 1. Create a customer in Stripe to link payment method
+    // 1. Create Stripe customer
     const customer = await stripe.customers.create({
       email,
       metadata: {
@@ -17,18 +17,20 @@ exports.handler = async (event) => {
       }
     });
 
-    // 2. Create a Stripe Checkout Session with stored card capability
+    // 2. Create Stripe Checkout Session with card storage for future use
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       mode: 'payment',
       payment_method_types: ['card'],
-      setup_future_usage: 'off_session', // ✅ Store card for future charges
+      payment_intent_data: {
+        setup_future_usage: 'off_session' // ✅ Correct placement
+      },
       line_items: [{
         price_data: {
           currency: 'usd',
           product_data: {
             name: `Lead Credit – ${vendor_name}`,
-            ...(notes ? { description: notes } : {}) // ✅ Only include if not empty
+            ...(notes ? { description: notes } : {}) // ✅ Only include if not blank
           },
           unit_amount: parseInt(amount) * 100
         },
@@ -38,9 +40,9 @@ exports.handler = async (event) => {
       cancel_url: 'https://ourweddingtent.com/admin.html'
     });
 
-    // 3. Send the checkout link via Resend email
+    // 3. Email checkout link to vendor + sales rep
     await resend.emails.send({
-      from: 'sales@ourweddingtent.com', // ✅ Must be verified in Resend
+      from: 'sales@ourweddingtent.com', // ✅ Must be a verified Resend sender
       to: [email, cc_email].filter(Boolean),
       subject: `Lead Credit Payment – ${vendor_name}`,
       html: `
@@ -51,7 +53,6 @@ exports.handler = async (event) => {
       `
     });
 
-    // 4. Return Stripe session URL to frontend
     return {
       statusCode: 200,
       body: JSON.stringify({ url: session.url })
