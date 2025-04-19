@@ -7,7 +7,7 @@ exports.handler = async (event) => {
     const data = JSON.parse(event.body);
     const { vendor_id, vendor_name, email, cc_email, amount, notes } = data;
 
-    // 1. Create Stripe customer
+    // 1. Create customer in Stripe (this helps track metadata)
     const customer = await stripe.customers.create({
       email,
       metadata: {
@@ -17,47 +17,56 @@ exports.handler = async (event) => {
       }
     });
 
-    // 2. Create Stripe Checkout Session with card storage for future use
+    // 2. Create Stripe Checkout session for the customer
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       mode: 'payment',
       payment_method_types: ['card'],
-      payment_intent_data: {
-        setup_future_usage: 'off_session' // ✅ Correct placement
-      },
       line_items: [{
         price_data: {
           currency: 'usd',
           product_data: {
             name: `Lead Credit – ${vendor_name}`,
-            ...(notes ? { description: notes } : {}) // ✅ Only include if not blank
+            description: notes || 'Lead credit purchase'
           },
           unit_amount: parseInt(amount) * 100
         },
         quantity: 1
       }],
       success_url: 'https://ourweddingtent.com/thank-you.html',
-      cancel_url: 'https://ourweddingtent.com/admin.html'
+      cancel_url: 'https://ourweddingtent.com/admin.html',
+      consent_collection: {
+        promotions: 'auto'
+      },
+      customer_creation: 'always',
     });
 
-    // 3. Email checkout link to vendor + sales rep
-    await resend.emails.send({
-      from: 'sales@ourweddingtent.com', // ✅ Must be a verified Resend sender
-      to: [email, cc_email].filter(Boolean),
-      subject: `Lead Credit Payment – ${vendor_name}`,
-      html: `
-        <p>Hello,</p>
-        <p>A checkout link has been generated for <strong>${vendor_name}</strong>.</p>
-        <p><a href="${session.url}">Click here to complete the payment of $${amount}</a>.</p>
-        ${notes ? `<p><em>Note: ${notes}</em></p>` : ''}
-      `
-    });
+    // 3. Send the checkout link via Resend
+    const recipients = [email, cc_email].filter(Boolean);
+    console.log('📤 Sending email to:', recipients);
+
+    try {
+      await resend.emails.send({
+        from: 'sales@ourweddingtent.com', // Must match verified Resend domain
+        to: recipients,
+        subject: `Lead Credit Payment – ${vendor_name}`,
+        html: `
+          <p>Hello,</p>
+          <p>A checkout link has been generated for <strong>${vendor_name}</strong>.</p>
+          <p><a href="${session.url}">Click here to complete the payment of $${amount}</a>.</p>
+          ${notes ? `<p><em>Note: ${notes}</em></p>` : ''}
+        `
+      });
+
+      console.log('✅ Email sent successfully!');
+    } catch (emailErr) {
+      console.error('❌ Failed to send email via Resend:', emailErr);
+    }
 
     return {
       statusCode: 200,
       body: JSON.stringify({ url: session.url })
     };
-
   } catch (err) {
     console.error('Checkout session error:', err);
     return {
