@@ -17,12 +17,11 @@ exports.handler = async (event) => {
       }
     });
 
-    // 2. Create Stripe Checkout session
+    // 2. Create Stripe Checkout session (customer_email removed!)
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       mode: 'payment',
       payment_method_types: ['card'],
-      customer_email: email,
       line_items: [{
         price_data: {
           currency: 'usd',
@@ -34,6 +33,7 @@ exports.handler = async (event) => {
         },
         quantity: 1
       }],
+      setup_future_usage: 'off_session',
       success_url: 'https://ourweddingtent.com/thank-you.html',
       cancel_url: 'https://ourweddingtent.com/admin.html'
     });
