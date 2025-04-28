@@ -1,69 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>OurWeddingTent</title>
-<link href="styles.css" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
-<link rel="icon" type="image/png" href="favicon.png"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OurWeddingTent</title>
+  <link href="styles.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      gap: 60px;
+    }
+    .form-section, .text-section {
+      flex: 1 1 450px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px auto;
+      max-width: 160px;
+    }
+    form {
+      background: #eadffd;
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0px 6px 20px rgba(0,0,0,0.08);
+    }
+    form input, form button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 999px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    form button {
+      background: linear-gradient(to right, #7e3af2, #592de0);
+      color: white;
+      border: none;
+      font-weight: 600;
+      margin-top: 25px;
+      cursor: pointer;
+    }
+    .text-section {
+      padding-top: 40px;
+    }
+    .text-section h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .text-section p {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .text-section strong {
+      font-weight: 700;
+    }
+    .testimonial {
+      display: flex;
+      align-items: center;
+      margin-top: 25px;
+    }
+    .testimonial img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 13px;
+      color: #777;
+      padding-bottom: 30px;
+    }
+    footer a {
+      color: #592de0;
+      margin: 0 8px;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-<div style="text-align: right; padding: 20px;">
-  <a href="vendor.html" style="padding: 10px 20px; background: #eadffd; color: #592de0; font-weight: 600; text-decoration: none; border-radius: 999px; font-size: 0.95rem;">Tent Vendor? Apply Today!</a>
-</div>
-<div class="page-wrapper">
-  <div class="columns">
-    <div class="form-section" style="padding: 30px 20px;">
-      <img alt="Logo" class="logo" src="logo.png" style="max-width: 200px; width: 100%; margin: 0 auto 30px; display: block;"/>
+  <div style="text-align: right; padding: 20px;">
+    <a href="vendor.html" style="padding: 10px 20px; background: #eadffd; color: #592de0; font-weight: 600; text-decoration: none; border-radius: 999px; font-size: 0.95rem;">Tent Vendor? Apply Today!</a>
+  </div>
+
+  <div class="container">
+    <div class="form-section">
+      <img alt="Logo" class="logo" src="logo.png"/>
       <form action="thank-you.html" data-netlify="true" method="POST" name="wedding-leads">
         <input name="form-name" type="hidden" value="wedding-leads"/>
-        <input name="wedding_location" placeholder="What City and State?" required="" type="text"/>
-        <input name="wedding_date" placeholder="When is the Big Day?" required="" type="text"/>
-        <input name="guest_count" placeholder="How Many Guests?" required="" type="number"/>
-        <input name="name" placeholder="Your Name" required="" type="text"/>
-        <input name="email" placeholder="Email Address" required="" type="email"/>
-        <input name="phone" placeholder="Phone Number" required="" type="tel"/>
+        <input name="wedding_location" placeholder="What City and State?" required type="text"/>
+        <input name="wedding_date" placeholder="When is the Big Day?" required type="text"/>
+        <input name="guest_count" placeholder="How Many Guests?" required type="number"/>
+        <input name="name" placeholder="Your Name" required type="text"/>
+        <input name="email" placeholder="Email Address" required type="email"/>
+        <input name="phone" placeholder="Phone Number" required type="tel"/>
         <button type="submit">Get Quotes Now!</button>
       </form>
-      <div style="text-align: center; margin-top: 40px;">
-        🧙‍♀️ Need help planning? <a href="tips.html" style="color: #592de0; font-weight: 600; text-decoration: underline;">Check out our Wedding Tent Tips →</a>
+      <div style="margin-top: 15px; text-align: center;">
+        🧘 Need help planning? <a href="tips.html" style="font-weight:600; color:#592de0;">Check out our Wedding Tent Tips →</a>
       </div>
     </div>
+
     <div class="text-section">
       <h2>Save $1,000s on your wedding tent—in just a few clicks</h2>
       <p>We connect you with pre-vetted, trusted tent companies competing to win your business.</p>
-      <strong>No stress. No guesswork.</strong><br/>
-      Just real quotes from real pros.
-      <div class="testimonial-block">
-        <div class="testimonial">
-          <img alt="Planner Headshot" src="https://i.imgur.com/sdnqUUm.png"/>
-          <div>
-            <p><em>“A fantastic service that I highly recommend”</em></p>
-            <p><strong>Sarah M.</strong> <span class="light">Wedding Planner</span></p>
-          </div>
-        </div>
-        <div class="testimonial">
-          <img alt="Couple" src="https://i.imgur.com/HgPNsWt.jpeg"/>
-          <div>
-            <p><em>“This site saved us so much money — It literally paid for our honeymoon to Italy”</em></p>
-            <p><strong>Emily &amp; Jason</strong></p>
-            <p style="margin-top: 30px;"></p>
-          </div>
+      <p><strong>No stress. No guesswork.</strong><br/>Just real quotes from real pros.</p>
+
+      <div class="testimonial">
+        <img src="https://i.imgur.com/sdnqUUm.png" alt="Planner Headshot"/>
+        <div>
+          <p style="font-style: italic;">"A fantastic service that I highly recommend"</p>
+          <p><strong>Sarah M.</strong> <span style="color:#999; font-weight:400;">Wedding Planner</span></p>
         </div>
       </div>
-      <p style="margin-top: 30px;"></p>
+
+      <div class="testimonial">
+        <img src="https://i.imgur.com/HgPNsWt.jpeg" alt="Couple"/>
+        <div>
+          <p style="font-style: italic;">"This site saved us so much money — It literally paid for our honeymoon to Italy"</p>
+          <p><strong>Emily & Jason</strong></p>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-<footer style="text-align: center; margin-top: 40px;">
-  <div style="margin-bottom: 4px;">
-    <a href="privacy.html">Privacy Policy</a> |
-    <a href="terms.html">Terms</a> |
-    <a href="disclaimer.html">Disclaimer</a>
-  </div>
-  <div>Built with ❤️ in Santa Monica</div>
-  <div style="margin-top: 8px; font-size: 13px; color: #777;">© 2025 OurWeddingTent. All rights reserved.</div>
-</footer>
+
+  <footer>
+    <div>
+      <a href="privacy.html">Privacy Policy</a>|
+      <a href="terms.html">Terms</a>|
+      <a href="disclaimer.html">Disclaimer</a>
+    </div>
+    <div style="margin-top: 8px;">Built with ❤️ in Santa Monica</div>
+    <div style="margin-top: 8px;">&copy; 2025 OurWeddingTent. All rights reserved.</div>
+  </footer>
+
 </body>
 </html>
