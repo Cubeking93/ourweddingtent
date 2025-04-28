@@ -5,7 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>OurWeddingTent</title>
 <link href="styles.css" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="favicon.png"/>
 </head>
 <body>
@@ -14,8 +14,8 @@
 </div>
 <div class="page-wrapper">
   <div class="columns">
-    <div class="form-section">
-      <img alt="Logo" class="logo" src="logo.png"/>
+    <div class="form-section" style="padding: 30px 20px;">
+      <img alt="Logo" class="logo" src="logo.png" style="max-width: 200px; width: 100%; margin: 0 auto 30px; display: block;"/>
       <form action="thank-you.html" data-netlify="true" method="POST" name="wedding-leads">
         <input name="form-name" type="hidden" value="wedding-leads"/>
         <input name="wedding_location" placeholder="What City and State?" required="" type="text"/>
@@ -26,15 +26,9 @@
         <input name="phone" placeholder="Phone Number" required="" type="tel"/>
         <button type="submit">Get Quotes Now!</button>
       </form>
-
-      <!-- Added Tips Link -->
-      <div style="text-align: center; margin-top: 20px;">
-        <a href="tips.html" style="color: #592de0; font-weight: 600; text-decoration: underline; font-size: 0.95rem;">
-          🧠 Need help planning? Check out our Wedding Tent Tips ➔
-        </a>
+      <div style="text-align: center; margin-top: 40px;">
+        🧙‍♀️ Need help planning? <a href="tips.html" style="color: #592de0; font-weight: 600; text-decoration: underline;">Check out our Wedding Tent Tips →</a>
       </div>
-      <!-- End Tips Link -->
-
     </div>
     <div class="text-section">
       <h2>Save $1,000s on your wedding tent—in just a few clicks</h2>
